@@ -32,6 +32,20 @@ node main.ts             # copies app/ + screenshots/ to /output and writes doss
 
 `main.ts` and `vendor/makefun-frontend.ts` come from the make.fun kit; the site itself is in `app/`.
 
+## Verify
+
+Run `MAKEFUN_OUTPUT_DIR=/tmp/hb-verify node main.ts` to copy `app/` and
+`screenshots/` into `/tmp/hb-verify` and write `dossier.json` there. Run
+`node serve.ts`, then open `http://localhost:8080` and check `#/`,
+`#/transactions`, `#/budgets`, and `#/reports`. Stop the server with Ctrl+C.
+Use **Reset demo data** before comparing these seed-data totals:
+
+- Income: **$5,850** from 2 sources; **29 transactions** total **$3,663.77** spent.
+- Saved: **$2,186.23**, displayed as **$2,186 (37%)**.
+- Utilities is the only category over budget: **$306.29 of $290**, or **$16.29 over**.
+- Groceries: **$708.75 of $720 (98%)**, with **$11.25 left**.
+- Reports average monthly saving: **$2,046**, rounded across the six months in `app/data.js`.
+
 ## Screenshots
 
 Under `screenshots/` (real renders of the site's own code, taken in headless Chromium):

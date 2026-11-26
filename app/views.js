@@ -92,11 +92,14 @@ export function transactions(state, filter) {
 
 export function budgets(state) {
   const t = totals(state);
+  const categories = state.categories.filter((c) => c.id !== "savings");
+  const over = categories.filter((c) => (t.byCat[c.id] || 0) > c.budget);
   return `<h1>Budgets — November 2026</h1>
-<p class="lede">Monthly limits per category. Utilities is over budget this month; groceries is at 98% of its limit and the rest are on track.</p>
-${state.categories.filter((c) => c.id !== "savings").map((c) => {
+<p class="lede">Monthly limits per category. ${over.length ? `${over.length} ${over.length === 1 ? "category is" : "categories are"} over budget: ${over.map((c) => escape(c.name)).join(", ")}.` : "All categories are within budget."}</p>
+${categories.map((c) => {
     const spent = t.byCat[c.id] || 0;
-    return `<section class="panel budget-row"><div class="budget-head"><strong>${escape(c.name)}</strong><span>${money(spent)} of ${money(c.budget)} · ${money(Math.max(0, c.budget - spent))} left</span></div>
+    const remaining = c.budget - spent;
+    return `<section class="panel budget-row"><div class="budget-head"><strong>${escape(c.name)}</strong><span>${money(spent)} of ${money(c.budget)} · ${remaining < 0 ? `${money(-remaining)} over budget` : `${money(remaining)} left`}</span></div>
     ${progressBar(spent, c.budget, c.color)}
     <form class="budget-edit" data-cat="${c.id}"><label>Monthly budget <input name="budget" type="number" min="0" step="1" value="${c.budget}" aria-label="Monthly budget for ${escape(c.name)}"></label> <button type="submit">Save</button></form></section>`;
   }).join("")}
